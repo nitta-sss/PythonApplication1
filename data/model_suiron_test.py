@@ -1,65 +1,30 @@
-
-import tensorflow as tf
-from tensorflow.keras.preprocessing.text import Tokenizer
+from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing.sequence import pad_sequences
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Embedding, Dense, Flatten
-import numpy as np
+import pickle
 
-texts = [
-    "今日はとても楽しい！",
-    "最悪な気分だ……",
-    "驚いた！なんてことだ",
-    "なんか心配になってきた",
-]
+# ① モデルとトークナイザを読み込む
+model = load_model("emotion_model.h5",compile=False)
 
-# ラッセルの円環モデル座標（例）
-labels = [
-    [0.8, 0.7],   # 楽しい → Valence高, Arousal高
-    [-0.7, 0.5],  # 怒り・不快
-    [0.2, 0.9],   # 驚き
-    [-0.5, -0.2], # 心配
-]
-labels = np.array(labels)
+with open("tokenizer.pkl", "rb") as f:
+    tokenizer = pickle.load(f)
 
-tokenizer = Tokenizer(num_words=5000)
-tokenizer.fit_on_texts(texts)
-
-seqs = tokenizer.texts_to_sequences(texts)
-x_train = pad_sequences(seqs, maxlen=20)
-
-
-model = Sequential([
-    Embedding(input_dim=5000, output_dim=32, input_length=20),
-    Flatten(),
-    Dense(64, activation='relu'),
-    Dense(32, activation='relu'),
-    Dense(2, activation='linear')  # → Valence, Arousal
-])
-
-model.compile(
-    optimizer='adam',
-    loss='mse'
-)
-
-model.summary()
-
-
-model.fit(x_train, labels, epochs=30, batch_size=4)
-model.save("emotion_model.h5")
-
-
-
-
+# ② 推論関数
 def predict_emotion(text):
+    # テキストを数値化
     seq = tokenizer.texts_to_sequences([text])
     seq = pad_sequences(seq, maxlen=20)
+
+    # 推論
     pred = model.predict(seq)[0]
-    valence, arousal = pred
+
+    valence = float(pred[0])   # 快・不快（横軸）
+    arousal = float(pred[1])   # 覚醒・沈静（縦軸）
+
     return valence, arousal
 
-v, a = predict_emotion("ワクワクしてきた！")
-print("Valence:", v)
-print("Arousal:", a) 
+# ③ テスト
+text = "眠いなぁ"
+v, a = predict_emotion(text)
 
-print('こんにちは')
+print("Valence（快-不快）:", v)
+print("Arousal（覚醒-沈静）:", a)
