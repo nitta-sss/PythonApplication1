@@ -17,7 +17,10 @@ def read_text(text):
     engine.runAndWait()
 
 if __name__ == "__main__":
-    
-    # textに読み上げたいテキストを入力する。
-    text = "飯田くん寝ないで"
-    read_text(text)
+    with open('./test.txt') as f:
+        print('with通過')
+        for line in f:
+            print(line)
+            read_text(line)
+
+

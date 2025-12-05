@@ -39,7 +39,7 @@ def callback(in_data, frame_count, time_info, status):
         audiodata  = sr.AudioData(in_data, SAMPLE_RATE, 2)
         sprec_text = sprec.recognize_google(audiodata, language='ja-JP')
         
-        with open(OUTPUT_TXT_FILE,'a') as f: #ファイルの末尾に追記していく
+        with open(OUTPUT_TXT_FILE,'a',encoding='utf-8') as f: #ファイルの末尾に追記していく
             f.write("\n" + sprec_text)
     
     except sr.UnknownValueError:
@@ -57,7 +57,7 @@ def realtime_textise():
     リアルタイムで音声を文字起こしする
     """
 
-    with open(OUTPUT_TXT_FILE, 'w') as f: #txtファイルの新規作成
+    with open(OUTPUT_TXT_FILE, 'w',encoding='utf-8') as f: #txtファイルの新規作成
         DATE = datetime.now().strftime('%Y%m%d_%H:%M:%S')
         f.write("日時 : " + DATE + "\n") # 最初の一行目に日時を記載する
 
@@ -81,7 +81,7 @@ def realtime_textise():
     stream.start_stream()
     
     while stream.is_active():
-        time.sleep(0.1)
+        time.sleep(0.01)
     
     stream.stop_stream()
     stream.close()
