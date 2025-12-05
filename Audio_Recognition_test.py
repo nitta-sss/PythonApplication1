@@ -58,8 +58,7 @@ def realtime_textise():
     """
 
     with open(OUTPUT_TXT_FILE, 'w',encoding='utf-8') as f: #txtファイルの新規作成
-        DATE = datetime.now().strftime('%Y%m%d_%H:%M:%S')
-        f.write("日時 : " + DATE + "\n") # 最初の一行目に日時を記載する
+        f.write("generator_audio" + "\n") # 最初の一行目に日時を記載する
 
     global sprec # speech_recognitionオブジェクトを毎回作成するのではなく、使いまわすために、グローバル変数で定義しておく
     
