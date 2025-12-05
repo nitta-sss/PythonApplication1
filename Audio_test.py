@@ -1,0 +1,23 @@
+import pyttsx3
+
+def read_text(text):
+    # エンジンの初期化
+    engine = pyttsx3.init()
+
+    # 速度設定　0に近づくほど遅くなる
+    engine.setProperty('rate', 150)  
+
+    # 音量設定　0.0(無音)～1.0(最大音量)
+    engine.setProperty('volume', 1.0) 
+
+    # テキストを読み上げる
+    engine.say(text)
+
+    # 読み上げを実行
+    engine.runAndWait()
+
+if __name__ == "__main__":
+    
+    # textに読み上げたいテキストを入力する。
+    text = "飯田くん寝ないで"
+    read_text(text)
