@@ -6,17 +6,21 @@ from datetime import datetime
 from faster_whisper import WhisperModel
 import threading
 import keyboard
-
+recording = False
 # -----------------------------
 # 設定
 # -----------------------------
+
+with open("C:/Users/232144/Desktop/HaLu/src/Audio/for_HaLu.txt",mode="r+")as f:
+    f.truncate(0)#現在のファイルサイズを０にする
+
 SAMPLE_RATE = 16000     # Whisper推奨
 CHANNELS = 1
 FORMAT = pyaudio.paInt16
 CHUNK = 1024            # 1回に読むフレーム数
-SILENCE_THRESHOLD = 600 # 無音判定の音量閾値
+SILENCE_THRESHOLD = 1000 # 無音判定の音量閾値
 SILENCE_DURATION = 1  # 無音が0.8秒続いたら「発話終了」
-OUTPUT_FILE = datetime.now().strftime("%Y%m%d_%H%M") + ".txt"
+OUTPUT_FILE = "C:/Users/232144/Desktop/HALU/src/Audio/"+datetime.now().strftime("For_HaLu") + ".txt"
 
 # Whisperモデル
 model = WhisperModel("small", device="cpu", compute_type="int8")
@@ -25,14 +29,6 @@ model = WhisperModel("small", device="cpu", compute_type="int8")
 audio_buffer = []
 last_voice_time = time.time()
 lock = threading.Lock()
-
-# ---------------------------------------
-# 無音判定（RMS）
-# ---------------------------------------
-def is_silent(data):
-    audio = np.frombuffer(data, dtype=np.int16)
-    rms = np.sqrt(np.mean(audio**2))
-    return rms < SILENCE_THRESHOLD
 
 # ---------------------------------------
 # 音声認識（Whisper）
@@ -92,22 +88,25 @@ def main():
  
     try:
         while True:
-            data = stream.read(CHUNK)
+            
 
             with lock:
-                audio_buffer.append(data)
 
-            # 音がある？
-            if not is_silent(data):
-                last_voice_time = time.time()
-            else:
-                # 無音が一定時間続いた？
-                if time.time() - last_voice_time > SILENCE_DURATION: #現在の時刻　－　最後に音があった時刻　＞　無音間隔
-                    with lock:
-                        print("Whisper処理開始")
+                
+                if recording:
+                    
+                    print("録音中...")
+                    data = stream.read(CHUNK)
+                    audio_buffer.append(data)
+                    
+                    if recording==False:
                         process_buffer()
+                
+                
+
+
                         
-                    last_voice_time = time.time()
+                    
     except KeyboardInterrupt:
         print("\n Ctrl+C detected Stopping,,,")
 
@@ -117,5 +116,25 @@ def main():
         pa.terminate()
 
 
+threading.Thread(target=main, daemon=True).start()
+# ホットキーで録音開始・停止
+keyboard.on_press_key("r", lambda e: toggle_record())
+
+
+def toggle_record():
+    global recording
+    recording = not recording
+    if recording:
+        print("録音開始")
+        audio_buffer = []  # 録音開始時に空のリストにする
+    else:
+        print("録音停止")
+
+
+
+
+# メインスレッドはそのままターミナルで動かす
+print("Rキーを押すと録音開始、離すと録音停止")
+keyboard.wait()  # 無限ループで待機
 if __name__ == "__main__":
     main()
