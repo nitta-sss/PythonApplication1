@@ -5,6 +5,7 @@ import pandas as pd
 from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 import pickle
+import matplotlib.pyplot as plt
 
 """
 DBからテキストと感情ラベルをもってくる
@@ -68,7 +69,28 @@ model.compile(
 )
 
 # 学習
-model.fit(X, y, epochs=100, batch_size=32)
+history = model.fit(X, y, epochs=500, batch_size=32)
+
+"""
+グラフ表示
+"""
+
+# Loss
+plt.plot(history.history['loss'], label='loss')
+plt.title("Training Loss")
+plt.xlabel("Epoch")
+plt.ylabel("Loss")
+plt.legend()
+plt.show()
+
+# Accuracy
+plt.plot(history.history['accuracy'], label='accuracy')
+plt.title("Training Accuracy")
+plt.xlabel("Epoch")
+plt.ylabel("Accuracy")
+plt.legend()
+plt.show()
+
 # モデル保存
 model.save("emotion_model.h5")
 
