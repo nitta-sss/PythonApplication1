@@ -5,6 +5,7 @@ import time
 from datetime import datetime
 from faster_whisper import WhisperModel
 import threading
+import keyboard
 
 # -----------------------------
 # 設定
@@ -13,8 +14,8 @@ SAMPLE_RATE = 16000     # Whisper推奨
 CHANNELS = 1
 FORMAT = pyaudio.paInt16
 CHUNK = 1024            # 1回に読むフレーム数
-SILENCE_THRESHOLD = 500 # 無音判定の音量閾値
-SILENCE_DURATION = 0.8  # 無音が0.8秒続いたら「発話終了」
+SILENCE_THRESHOLD = 600 # 無音判定の音量閾値
+SILENCE_DURATION = 1  # 無音が0.8秒続いたら「発話終了」
 OUTPUT_FILE = datetime.now().strftime("%Y%m%d_%H%M") + ".txt"
 
 # Whisperモデル
@@ -37,7 +38,7 @@ def is_silent(data):
 # 音声認識（Whisper）
 # ---------------------------------------
 def transcribe_audio(wav_path):
-    segments, info = model.transcribe(wav_path, beam_size=1)
+    segments, info = model.transcribe(wav_path, beam_size=3,language="ja") #beam_size:音声の候補の数(1=高速だけど誤認しやすい　5=遅いけど正確)
     text = "".join([seg.text for seg in segments])
     return text
 
@@ -88,7 +89,7 @@ def main():
         input=True,
         frames_per_buffer=CHUNK
     )
-
+ 
     try:
         while True:
             data = stream.read(CHUNK)
@@ -101,9 +102,11 @@ def main():
                 last_voice_time = time.time()
             else:
                 # 無音が一定時間続いた？
-                if time.time() - last_voice_time > SILENCE_DURATION:
+                if time.time() - last_voice_time > SILENCE_DURATION: #現在の時刻　－　最後に音があった時刻　＞　無音間隔
                     with lock:
+                        print("Whisper処理開始")
                         process_buffer()
+                        
                     last_voice_time = time.time()
     except KeyboardInterrupt:
         print("\n Ctrl+C detected Stopping,,,")
