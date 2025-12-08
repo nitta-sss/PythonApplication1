@@ -1,4 +1,4 @@
 print('こんにちは！')
-print('oohoriついきしたよ')
+print('oohoriついきしたよwww')
 print('taichi原着')
 print('飯田惨状')
