@@ -9,8 +9,9 @@ FORMAT        = pyaudio.paInt16
 SAMPLE_RATE   = 44100        # サンプリングレート
 CHANNELS      = 1            # モノラルかバイラルか
 INPUT_DEVICE_INDEX = 0    # マイクのチャンネル
-CALL_BACK_FREQUENCY = 3      # コールバック呼び出しの周期[sec]
-
+CALL_BACK_FREQUENCY = 0.1   # コールバック呼び出しの周期[sec] 数値秒分の音をまとめて受け取る
+frames_per_buffer = int(SAMPLE_RATE * CALL_BACK_FREQUENCY)
+print(frames_per_buffer)
 
 OUTPUT_TXT_FILE = "./" + datetime.now().strftime('%Y%m%d_%H_%M') +".txt" # テキストファイルのファイル名を日付のtxtファイルにする
 
@@ -58,8 +59,7 @@ def realtime_textise():
     """
 
     with open(OUTPUT_TXT_FILE, 'w',encoding='utf-8') as f: #txtファイルの新規作成
-        DATE = datetime.now().strftime('%Y%m%d_%H:%M:%S')
-        f.write("日時 : " + DATE + "\n") # 最初の一行目に日時を記載する
+        f.write("generator_audio" + "\n") # 最初の一行目に日時を記載する
 
     global sprec # speech_recognitionオブジェクトを毎回作成するのではなく、使いまわすために、グローバル変数で定義しておく
     

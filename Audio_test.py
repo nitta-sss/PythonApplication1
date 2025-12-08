@@ -17,7 +17,7 @@ def read_text(text):
     engine.runAndWait()
 
 if __name__ == "__main__":
-    with open('./test.txt') as f:
+    with open('test.txt',encoding='utf-8') as f:
         print('with通過')
         for line in f:
             print(line)
