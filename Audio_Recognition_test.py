@@ -9,9 +9,9 @@ FORMAT        = pyaudio.paInt16
 SAMPLE_RATE   = 44100        # サンプリングレート
 CHANNELS      = 1            # モノラルかバイラルか
 INPUT_DEVICE_INDEX = 0    # マイクのチャンネル
-CALL_BACK_FREQUENCY = 0.1   # コールバック呼び出しの周期[sec] 数値秒分の音をまとめて受け取る
+CALL_BACK_FREQUENCY = 1   # コールバック呼び出しの周期[sec] 数値秒分の音をまとめて受け取る
 frames_per_buffer = int(SAMPLE_RATE * CALL_BACK_FREQUENCY)
-print(frames_per_buffer)
+print('コールバック',frames_per_buffer)
 
 OUTPUT_TXT_FILE = "./" + datetime.now().strftime('%Y%m%d_%H_%M') +".txt" # テキストファイルのファイル名を日付のtxtファイルにする
 
@@ -75,7 +75,7 @@ def realtime_textise():
                         channels           = CHANNELS,
                         input_device_index = INPUT_DEVICE_INDEX,
                         input              = True, 
-                        frames_per_buffer  = SAMPLE_RATE*CALL_BACK_FREQUENCY, # CALL_BACK_FREQUENCY 秒周期でコールバック
+                        frames_per_buffer  = frames_per_buffer, # CALL_BACK_FREQUENCY 秒周期でコールバック
                         stream_callback    = callback)
     
     stream.start_stream()
