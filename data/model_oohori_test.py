@@ -1,22 +1,62 @@
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Embedding, GlobalAveragePooling1D, Dense
 import sqlite3
-
-connection = sqlite3.connect("AI.db")
-cursor = connection.cursor()
+import pandas as pd
+from tensorflow.keras.preprocessing.text import Tokenizer
+from tensorflow.keras.preprocessing.sequence import pad_sequences
+import pickle
 
 """
 DBからテキストと感情ラベルをもってくる
 """
-# x書く (text)
+def load_data_db():
+    conn = sqlite3.connect("AI.db")
+    query = """
+            SELECT t.テキストデータ, k.感情ID, k.感情名
+            FROM TestData t 
+            JOIN Emotion k ON t.感情ID = k.感情ID
+            """
+    df = pd.read_sql_query(query, conn)
 
-# y書く (感情)
+    conn.close()
+    return df
+
+df = load_data_db()
+print("取得したデータ：")
+print(df.head(), "\n")
+
+
+"""
+x書く (テキスト)
+"""
+texts = df["テキストデータ"].values
+
+tokenizer = Tokenizer(num_words=5000)
+tokenizer.fit_on_texts(texts)
+
+# Tokenizer 保存
+with open("tokenizer.pkl", "wb") as f:
+    pickle.dump(tokenizer, f)
+
+seq = tokenizer.texts_to_sequences(texts)
+X = pad_sequences(seq, maxlen=30)
+
+print("X の形：", X.shape)
+
+
+"""
+y書く (感情)
+"""
+y = df["感情ID"].astype(int).values
+print("y の形：", y.shape)
 
 
 # モデル定義
 model = Sequential([
     Embedding(input_dim=5000, output_dim=16, input_length=30),
     GlobalAveragePooling1D(),
+    Dense(16, activation='relu'),
+    Dense(16, activation='relu'),
     Dense(16, activation='relu'),
     Dense(7, activation='softmax')  # ← 喜び,楽しい​,怒り,悲しみ,無感情,驚き,心配
 ])
@@ -28,6 +68,8 @@ model.compile(
 )
 
 # 学習
-model.fit(X, y, epochs=10, batch_size=32)
+model.fit(X, y, epochs=100, batch_size=32)
 # モデル保存
 model.save("emotion_model.h5")
+
+print("モデル学習完了!!!!!!!!")
