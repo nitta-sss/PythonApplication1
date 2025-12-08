@@ -1,5 +1,9 @@
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Embedding, GlobalAveragePooling1D, Dense
+import sqlite3
+
+connection = sqlite3.connect("AI.db")
+cursor = connection.cursor()
 
 """
 DBからテキストと感情ラベルをもってくる
