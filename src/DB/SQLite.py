@@ -6,9 +6,14 @@ cursor = conn.cursor()
 
 
 cursor.execute("""
-            SELECT t.テキストデータ, k.感情ID, k.感情名
-            FROM TestData t 
-            JOIN Emotion k ON t.感情ID = k.感情ID
+CREATE TABLE TestData(
+テストID INT AUTO_INCREMENT PRIMARY KEY,
+発言者ID INT NOT NULL,
+テキストデータ TEXT NOT NULL,      
+感情ID INT NOT NULL,
+FOREIGN KEY (発言者ID) REFERENCES 発言者ID(Speaker),
+FOREIGN KEY (感情ID) REFERENCES 感情ID(Emotion)
+)
 """)
 
 
