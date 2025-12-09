@@ -71,7 +71,7 @@ model.compile(
 # 学習
 history = model.fit(
     X, y,
-    epochs=500,
+    epochs=200,
     batch_size=32,
     validation_split=0.2   # ← データの 20% を検証用に使う
 )
@@ -82,6 +82,7 @@ history = model.fit(
 
 # Loss
 plt.plot(history.history['loss'], label='loss')
+plt.plot(history.history['val_loss'], label='val_loss') 
 plt.title("Training Loss")
 plt.xlabel("Epoch")
 plt.ylabel("Loss")
@@ -90,6 +91,7 @@ plt.show()
 
 # Accuracy
 plt.plot(history.history['accuracy'], label='accuracy')
+plt.plot(history.history['val_accuracy'], label='val_accuracy') 
 plt.title("Training Accuracy")
 plt.xlabel("Epoch")
 plt.ylabel("Accuracy")
