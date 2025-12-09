@@ -6,8 +6,7 @@ cursor = conn.cursor()
 
 # データの取得
 cursor.execute("""
-INSERT INTO TestData(テストID,発言者ID,テキストデータ,感情ID)
-VALUES (13,1,'NULLテスト',NULL)
+DELETE FROM TestData;
 """)
 
 rows = cursor.fetchall()  # すべての行を取得
