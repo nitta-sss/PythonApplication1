@@ -91,6 +91,7 @@ plt.ylabel("Accuracy")
 plt.legend()
 plt.show()
 
+print(history)
 # モデル保存
 model.save("emotion_model.h5")
 
