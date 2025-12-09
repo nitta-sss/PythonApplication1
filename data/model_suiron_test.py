@@ -23,7 +23,7 @@ def predict_emotion(text):
     return valence, arousal
 
 # ③ テスト
-text = "クソが"
+text = "ガチ幸せ"
 v, a = predict_emotion(text)
 
 print("Valence（快-不快）:", v)
