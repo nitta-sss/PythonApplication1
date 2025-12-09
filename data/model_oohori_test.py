@@ -7,6 +7,9 @@ from tensorflow.keras.preprocessing.sequence import pad_sequences
 import pickle
 import matplotlib.pyplot as plt
 
+# 12/09 memo テキスト用のもでるにしないといけないんじゃない？
+
+
 """
 DBからテキストと感情ラベルをもってくる
 """
