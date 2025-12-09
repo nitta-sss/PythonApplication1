@@ -69,7 +69,12 @@ model.compile(
 )
 
 # 学習
-history = model.fit(X, y, epochs=500, batch_size=32)
+history = model.fit(
+    X, y,
+    epochs=500,
+    batch_size=32,
+    validation_split=0.2   # ← データの 20% を検証用に使う
+)
 
 """
 グラフ表示
