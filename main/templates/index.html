@@ -1,0 +1,59 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>Halu UI</title>
+    <link rel="stylesheet" href="{% static 'main/style.css' %}">
+</head>
+<body>
+
+<div class="container">
+
+    <!-- ★★★ 左エリア ★★★ -->
+    <div class="left-area">
+        <div class="chat-box">
+            <div class="balloon user">こんにちは！</div>
+            <div class="balloon bot">リラックスしてるよ</div>
+        </div>
+
+        <div class="speak-icon">
+            🗣
+        </div>
+    </div>
+
+
+    <!-- ★★★ 右エリア ★★★ -->
+    <div class="right-area">
+
+        <!-- 背景画像＋ライトはCSSで設定 -->
+
+        <div class="face-area">
+            <img src="{% static 'img/face.png' %}" class="face-img">
+        </div>
+
+        <!-- 感情ゲージ -->
+        <div class="emotion-area">
+
+            <div class="bar-item">
+                <div class="bar-label">覚醒度</div>
+                <div class="bar-base">
+                    <div class="bar-fill" style="width: 40%;"></div>
+                </div>
+            </div>
+
+            <div class="bar-item">
+                <div class="bar-label">快楽度</div>
+                <div class="bar-base">
+                    <div class="bar-fill" style="width: 80%;"></div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>
