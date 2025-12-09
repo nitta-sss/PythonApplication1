@@ -2,7 +2,7 @@ import sqlite3
 import tkinter as tk
 from tkinter import ttk, messagebox
 
-DB_PATH = "AI.db"   # ← 必要に応じてパス修正
+DB_PATH = "AI.db"   # ← DBの相対パスいれてる
 
 
 emotion_jp_to_en = {
