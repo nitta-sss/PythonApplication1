@@ -1,6 +1,10 @@
 from django.shortcuts import render
 
 def index(request):
+        
+    awakening = 100
+    pleasure = 60
+
     messages = [
         {"sender": "user", "text": "こんにちは！"},
         {"sender": "bot",  "text": "リラックスしてるよ"},
@@ -18,12 +22,9 @@ def index(request):
         {"sender": "bot",  "text": "だまれ"},
     ]
 
-    awakening = 30   # 覚醒度（0～100）
-    pleasure = 70    # 快楽度（0～100）
- 
+
     return render(request, "index.html", {
-        "messages": messages
         "awakening": awakening,
         "pleasure": pleasure,
-
+        "messages": messages,
     })
