@@ -1,3 +1,5 @@
+
+
 import pyaudio
 import numpy as np
 import wave
@@ -18,8 +20,6 @@ SAMPLE_RATE = 16000     # Whisper推奨
 CHANNELS = 1
 FORMAT = pyaudio.paInt16
 CHUNK = 1024            # 1回に読むフレーム数
-SILENCE_THRESHOLD = 1000 # 無音判定の音量閾値
-SILENCE_DURATION = 1  # 無音が0.8秒続いたら「発話終了」
 OUTPUT_FILE = "C:/Users/232144/Desktop/HALU/src/Audio/"+datetime.now().strftime("For_HaLu") + ".txt"
 
 # Whisperモデル
@@ -88,13 +88,8 @@ def main():
  
     try:
         while True:
-            
-
             with lock:
-
-                
                 if recording:
-                    
                     print("録音中...")
                     data = stream.read(CHUNK)
                     audio_buffer.append(data)
@@ -102,11 +97,7 @@ def main():
                     if recording==False:
                         process_buffer()
                 
-                
-
-
-                        
-                    
+                          
     except KeyboardInterrupt:
         print("\n Ctrl+C detected Stopping,,,")
 
