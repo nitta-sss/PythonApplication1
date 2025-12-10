@@ -50,14 +50,14 @@
             <div class="bar-item">
                 <div class="bar-label">覚醒度</div>
                 <div class="bar-base">
-                    <div class="bar-fill" style="width: 40%;"></div>
+                    <div class="bar-fill fill1" id="awakeBar"></div>
                 </div>
             </div>
-
+            
             <div class="bar-item">
                 <div class="bar-label">快楽度</div>
                 <div class="bar-base">
-                    <div class="bar-fill" style="width: 80%;"></div>
+                    <div class="bar-fill fill2" id="pleasureBar"></div>
                 </div>
             </div>
 
@@ -66,6 +66,13 @@
     </div>
 
 </div>
+<script>
+    const awakening = Number("{{ awakening }}");
+    const pleasure  = Number("{{ pleasure }}");
+
+    document.getElementById("awakeBar").style.width = awakening + "%";
+    document.getElementById("pleasureBar").style.width = pleasure + "%";
+</script>
 
 </body>
 </html>
