@@ -80,7 +80,7 @@ model.summary()
 # 学習
 history = model.fit(
     X, y_reg,
-    epochs=50,
+    epochs=30,
     batch_size=32,
     validation_split=0.2
 )
@@ -104,7 +104,7 @@ print("モデル学習完了！！！！")
 
 
 # テスト用！！！
-text = ["明日の試験の勉強全くしてないから落ちるかもしれない"]
+text = ["今日は天気がいいので景色がよさそうだ"]
 
 seq = tokenizer.texts_to_sequences(text)
 x = pad_sequences(seq, maxlen=30)
