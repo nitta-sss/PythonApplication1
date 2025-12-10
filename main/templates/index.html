@@ -67,12 +67,20 @@
 
 </div>
 <script>
-    const awakening = Number("{{ awakening }}");
-    const pleasure  = Number("{{ pleasure }}");
-
-    document.getElementById("awakeBar").style.width = awakening + "%";
-    document.getElementById("pleasureBar").style.width = pleasure + "%";
-</script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const awakening = Number("{{ awakening }}");
+        const pleasure  = Number("{{ pleasure }}");
+    
+        const awakeBar = document.getElementById("awakeBar");
+        const pleasureBar = document.getElementById("pleasureBar");
+    
+        if (awakeBar && pleasureBar) {
+            awakeBar.style.width = awakening + "%";
+            pleasureBar.style.width = pleasure + "%";
+        }
+    });
+    </script>
+    
 
 </body>
 </html>
