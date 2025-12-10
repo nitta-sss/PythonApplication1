@@ -46,7 +46,7 @@ def process_buffer():
     if not audio_buffer:
         return
 
-    wav_path = "temp.wav"
+    wav_path = "C:/Users/232144/Desktop/HALU/src/Audio/temp.wav"
     
     # wav保存
     wf = wave.open(wav_path, "wb")
