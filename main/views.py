@@ -19,3 +19,12 @@ def index(request):
     ]
 
     return render(request, 'index.html', {"messages": messages})
+
+def index(request):
+    awakening = 10   # 覚醒度（0～100）
+    pleasure = 80    # 快楽度（0～100）
+ 
+    return render(request, "index.html", {
+        "awakening": awakening,
+        "pleasure": pleasure,
+    })
