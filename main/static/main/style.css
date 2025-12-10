@@ -1,3 +1,4 @@
+
 /* ===========================
    全体レイアウト
 =========================== */
@@ -11,6 +12,37 @@ body {
     width: 100%;
     height: 100vh;
 }
+
+header {
+    background-color: #333;
+    color: white;
+    padding: 1rem;
+    text-align: center;
+}
+
+footer {
+    background-color: #eee;
+    color: #333;
+    padding: 1rem;
+    text-align: center;
+}
+
+main {
+    min-height: 70vh; /* フッターが画面下に来るようにする */
+    padding: 2rem;
+}
+.user-box {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border: 2px solid #333;
+    padding: 8px 16px;
+    border-radius: 10px;
+    width: fit-content;
+    font-family: Arial, sans-serif;
+}
+
+
 
 
 /* ===========================
@@ -44,23 +76,52 @@ body {
 .chat-box {
     height: 85%;
     overflow-y: auto;
+    display: flex;
+    flex-direction: column;
 }
 
 .balloon {
+    max-width: 70%;
     padding: 10px 15px;
-    margin: 10px 0;
-    border-radius: 15px;
-    display: inline-box;
+    margin: 8px 0;
+    border-radius: 12px;
+    display: inline-block;
 }
+
 
 .balloon.user {
     background: #fff;
     align-self: flex-start;
+    position: relative;
 }
+.balloon.user::after {
+    content: "";
+    position: absolute;
+    left: 10px;
+    top: 34px;
+    width: 0;
+    height: 0;
+    border-top: 10px solid transparent;
+    border-bottom: 10px solid transparent;
+    border-left: 10px solid #fff;
+}
+
 
 .balloon.bot {
     background: #ffffff;
     align-self: flex-end;
+    position: relative;
+}
+.balloon.bot::after {
+    content: "";
+    position: absolute;
+    right: 10px; 
+    top: 34px;   
+    width: 0;
+    height: 0;
+    border-top: 10px solid transparent;
+    border-bottom: 10px solid transparent;
+    border-right: 10px solid #fff;
 }
 
 .speak-icon {
@@ -111,6 +172,7 @@ body {
     width: 100%;
     height: 25px;
     background: #fff;
+    border-color: black;
 }
 
 .bar-fill {

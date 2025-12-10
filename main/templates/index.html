@@ -1,4 +1,5 @@
 {% load static %}
+
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -8,13 +9,24 @@
 </head>
 <body>
 
-<div class="container">
+  <div class="header">
+    <div class="user-box">
+    <div class="icon"><img src="{% static 'img/face.png' %}" class="face-img"></div>
+    <span class="username">Halu</span>
+</div>
+
+  </div>
+
+  <div class="container">
 
     <!-- ★★★ 左エリア ★★★ -->
     <div class="left-area">
         <div class="chat-box">
-            <div class="balloon user">こんにちは！</div>
-            <div class="balloon bot">リラックスしてるよ</div>
+        {% for msg in messages %}
+            <div class="balloon {{ msg.sender }}">
+                {{ msg.text }}
+            </div>
+        {% endfor %}
         </div>
 
         <div class="speak-icon">
