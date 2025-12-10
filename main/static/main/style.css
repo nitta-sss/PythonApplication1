@@ -64,7 +64,7 @@ main {
     color: #fff;
 
     /* 背景画像（電球の部屋）を固定 */
-    background-image: url("../img/bg.jpg");
+    background-image: url("main/picture/windows.jpg");
     background-size: cover;
     background-position: center;
 }
