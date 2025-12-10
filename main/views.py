@@ -8,23 +8,22 @@ def index(request):
         {"sender": "bot",  "text": "だまれ"},
         {"sender": "bot",  "text": "だまれ"},
         {"sender": "bot",  "text": "だまれだまれだまれだまれだまれだまれ"},
-    {"sender": "bot",  "text": "だまれ"},
-           {"sender": "user", "text": "こんにちは！"},
+        {"sender": "bot",  "text": "だまれ"},
+        {"sender": "user", "text": "こんにちは！"},
         {"sender": "bot",  "text": "リラックスしてるよ"},
         {"sender": "user", "text": "今日は調子いい？"},
         {"sender": "bot",  "text": "だまれ"},
         {"sender": "bot",  "text": "だまれ"},
         {"sender": "bot",  "text": "だまれだまれだまれだまれだまれだまれ"},
-    {"sender": "bot",  "text": "だまれ"},
+        {"sender": "bot",  "text": "だまれ"},
     ]
 
-    return render(request, 'index.html', {"messages": messages})
-
-def index(request):
-    awakening = 10   # 覚醒度（0～100）
-    pleasure = 80    # 快楽度（0～100）
+    awakening = 30   # 覚醒度（0～100）
+    pleasure = 70    # 快楽度（0～100）
  
     return render(request, "index.html", {
+        "messages": messages
         "awakening": awakening,
         "pleasure": pleasure,
+
     })
