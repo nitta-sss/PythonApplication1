@@ -77,5 +77,5 @@ history = model.fit(
 )
 
 # モデル保存
-model.save("emotion_model_bilstm.h5")
+model.save("emotion_model.h5")
 print("学習モデル保存完了（emotion_model_bilstm.h5）")
