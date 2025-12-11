@@ -207,7 +207,6 @@ main {
     height: 25px;
     background: #fff;
     border: 2px solid #000;
-    border-radius: 10px;
     overflow: hidden;      /* ★ これが最重要 */
 }
 
