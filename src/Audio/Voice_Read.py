@@ -133,4 +133,4 @@ def toggle_record():
 
 # 無限ループで待機
 if __name__ == "__main__":
-    main()
+    start_voice_read()
