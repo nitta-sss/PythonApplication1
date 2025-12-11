@@ -1,5 +1,3 @@
-
-
 import pyaudio
 import numpy as np
 import wave
@@ -8,76 +6,61 @@ from datetime import datetime
 from faster_whisper import WhisperModel
 import threading
 import keyboard
+
 recording = False
-flag = True
+audio_buffer = []
+lock = threading.Lock()
+stop_flag = False
+final_text = None  # ← ここに最終テキストを保存する
+
 # -----------------------------
 # 設定
 # -----------------------------
-
-with open("C:/Users/232144/Desktop/HaLu/src/Audio/for_HaLu.txt",mode="r+")as f:
-    f.truncate(0)#現在のファイルサイズを０にする
-
-SAMPLE_RATE = 16000     # Whisper推奨
+SAMPLE_RATE = 16000
 CHANNELS = 1
 FORMAT = pyaudio.paInt16
-CHUNK = 1024            # 1回に読むフレーム数
-OUTPUT_FILE = "C:/Users/232144/Desktop/HALU/src/Audio/"+datetime.now().strftime("For_HaLu") + ".txt"
+CHUNK = 1024
+TEMP_WAV = "temp.wav"
 
 # Whisperモデル
 model = WhisperModel("small", device="cpu", compute_type="int8")
 
-# 音声バッファ
-audio_buffer = []
-last_voice_time = time.time()
-lock = threading.Lock()
+# -----------------------------
+# 音声認識
+# -----------------------------
+def transcribe_audio(path):
+    segments, info = model.transcribe(path, beam_size=3, language="ja")
+    return "".join([seg.text for seg in segments])
 
-# ---------------------------------------
-# 音声認識（Whisper）
-# ---------------------------------------
-def transcribe_audio(wav_path):
-    segments, info = model.transcribe(wav_path, beam_size=3,language="ja") #beam_size:音声の候補の数(1=高速だけど誤認しやすい　5=遅いけど正確)
-    text = "".join([seg.text for seg in segments])
-    return text
-
-# ---------------------------------------
-# 発話が終わったら Whisper で認識
-# ---------------------------------------
+# -----------------------------
+# バッファ処理 → WAV保存 → Whisper
+# -----------------------------
 def process_buffer():
-    global audio_buffer,flag
+    global audio_buffer, final_text, stop_flag
+
     if not audio_buffer:
         return
 
-    wav_path = "C:/Users/232144/Desktop/HALU/src/Audio/temp.wav"
-    
-    # wav保存
-    wf = wave.open(wav_path, "wb")
-    wf.setnchannels(CHANNELS)
-    wf.setsampwidth(2)
-    wf.setframerate(SAMPLE_RATE)
-    wf.writeframes(b"".join(audio_buffer))
-    wf.close()
+    # WAV保存
+    with wave.open(TEMP_WAV, "wb") as wf:
+        wf.setnchannels(CHANNELS)
+        wf.setsampwidth(2)
+        wf.setframerate(SAMPLE_RATE)
+        wf.writeframes(b"".join(audio_buffer))
 
-    # Whisperで認識
-    text = transcribe_audio(wav_path)
+    # Whisper変換
+    text = transcribe_audio(TEMP_WAV)
+    print(">> 認識結果:", text)
 
-    # テキスト保存
-    if text.strip():
-        print(">>", text)
-        with open(OUTPUT_FILE, "a", encoding="utf-8") as f:
-            f.write(text + "\n")
-
-    # バッファクリア
+    final_text = text
+    stop_flag = True  # ← これで main ループを終了させる
     audio_buffer = []
-    flag = False
 
-
-# ---------------------------------------
-# メイン：マイク読み取りループ
-# ---------------------------------------
-def main():
-    global audio_buffer, last_voice_time
-
-    print("🎤 リアルタイム文字起こし開始（Whisper / オフライン）")
+# -----------------------------
+# マイクループ
+# -----------------------------
+def audio_loop():
+    global recording, audio_buffer, stop_flag
 
     pa = pyaudio.PyAudio()
     stream = pa.open(
@@ -87,50 +70,58 @@ def main():
         input=True,
         frames_per_buffer=CHUNK
     )
- 
-    try:
-        while flag:
-            with lock:
-                if recording:
-                    print("録音中...")
-                    data = stream.read(CHUNK)
-                    audio_buffer.append(data)
-                else:
-                    if audio_buffer:
-                        process_buffer()
-                
-                          
-    except KeyboardInterrupt:
-        print("\n Ctrl+C detected Stopping,,,")
 
+    print("🎤 Rキー長押しで録音開始 → 離すと停止＆文字起こし")
+
+    try:
+        while not stop_flag:
+            if recording:
+                data = stream.read(CHUNK)
+                with lock:
+                    audio_buffer.append(data)
     finally:
         stream.stop_stream()
         stream.close()
         pa.terminate()
 
-def start_voice_read():
-    threading.Thread(target=main, daemon=True).start()
-    # ホットキーで録音開始・停止
-    keyboard.on_press_key("r", lambda e: toggle_record())
-    print("Rキーを押すと録音開始、離すと録音停止")
-    keyboard.wait() 
-    print(text)
-    return text
+# -----------------------------
+# Rキーで録音ON/OFF
+# -----------------------------
+def toggle_record(event):
+    global recording, audio_buffer
 
-def toggle_record():
-    global recording
     recording = not recording
     if recording:
-        print("録音開始")
-        audio_buffer = []  # 録音開始時に空のリストにする
+        print("🎙️ 録音開始")
+        audio_buffer = []
     else:
-        print("録音停止")
+        print("🛑 録音停止 → 変換中...")
+        process_buffer()
+
+# -----------------------------
+# 外部呼び出し用
+# -----------------------------
+def start_voice_read():
+    global final_text
+
+    # 音声ループを別スレッドで開始
+    t = threading.Thread(target=audio_loop, daemon=True)
+    t.start()
+
+    # Rキーを登録
+    keyboard.on_press_key("r", toggle_record)
+
+    # テキストが取れるまで待つ
+    while final_text is None:
+        time.sleep(0.1)
+
+    return final_text
 
 
-
-
-# メインスレッドはそのままターミナルで動かす
-
-# 無限ループで待機
+# -----------------------------
+# デバッグ用
+# -----------------------------
 if __name__ == "__main__":
-    start_voice_read()
+    text = start_voice_read()
+    print("\n=== 完了 ===")
+    print("返されたテキスト:", text)

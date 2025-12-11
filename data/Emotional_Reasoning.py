@@ -42,14 +42,13 @@ def predict_emotion(text):
     return valence, arousal
 
 # テスト実行
-def suiron_test():
-    with open("C:/Users/232144/Desktop/HaLu/src/Audio/for_HaLu.txt", "rb") as f:
-        text = pickle.load(f)
+def suiron_test(text):
     val, aro = predict_emotion(text)
 
     print("入力文：", text)
     print("予測 Valence:", val)
     print("予測 Arousal:", aro)
-    return val,aro
+
+    return val, aro
 
 
