@@ -9,6 +9,7 @@ from faster_whisper import WhisperModel
 import threading
 import keyboard
 recording = False
+flag = True
 # -----------------------------
 # 設定
 # -----------------------------
@@ -42,7 +43,7 @@ def transcribe_audio(wav_path):
 # 発話が終わったら Whisper で認識
 # ---------------------------------------
 def process_buffer():
-    global audio_buffer
+    global audio_buffer,flag
     if not audio_buffer:
         return
 
@@ -67,6 +68,7 @@ def process_buffer():
 
     # バッファクリア
     audio_buffer = []
+    flag = False
 
 
 # ---------------------------------------
@@ -87,14 +89,14 @@ def main():
     )
  
     try:
-        while True:
+        while flag:
             with lock:
                 if recording:
                     print("録音中...")
                     data = stream.read(CHUNK)
                     audio_buffer.append(data)
-                    
-                    if recording==False:
+                else:
+                    if audio_buffer:
                         process_buffer()
                 
                           
@@ -106,11 +108,14 @@ def main():
         stream.close()
         pa.terminate()
 
-
-threading.Thread(target=main, daemon=True).start()
-# ホットキーで録音開始・停止
-keyboard.on_press_key("r", lambda e: toggle_record())
-
+def start_voice_read():
+    threading.Thread(target=main, daemon=True).start()
+    # ホットキーで録音開始・停止
+    keyboard.on_press_key("r", lambda e: toggle_record())
+    print("Rキーを押すと録音開始、離すと録音停止")
+    keyboard.wait() 
+    print(text)
+    return text
 
 def toggle_record():
     global recording
@@ -125,7 +130,7 @@ def toggle_record():
 
 
 # メインスレッドはそのままターミナルで動かす
-print("Rキーを押すと録音開始、離すと録音停止")
-keyboard.wait()  # 無限ループで待機
+
+# 無限ループで待機
 if __name__ == "__main__":
     main()
