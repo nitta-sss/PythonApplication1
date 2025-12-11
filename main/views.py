@@ -1,9 +1,13 @@
+#from data.Emotional.Delivary import get_emotion_values
 from django.shortcuts import render
 
 def index(request):
-        
+
+    # text = "怒りで震えてる！許せない！！"
+    # a, b = get_emotion_values(text)
+    # print(a,b)
+    pleasure = 100
     awakening = 100
-    pleasure = 60
 
     messages = [
         {"sender": "user", "text": "こんにちは！"},
